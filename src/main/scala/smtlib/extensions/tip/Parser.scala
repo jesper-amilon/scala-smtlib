@@ -207,7 +207,8 @@ class Parser(lexer: Lexer) extends parser.Parser(lexer) {
       if ((funDec +: funDecs).exists(_.isLeft)) {
         DefineFunsRecPar(funDec +: funDecs, body +: bodies)
       } else {
-        DefineFunsRec((funDec +: funDecs).map(_.right.get), body +: bodies)
+        val funsRec = (funDec +: funDecs).collect { case Right(funDec) => funDec }
+        DefineFunsRec(funsRec, body +: bodies)
       }
 
     case LT.DeclareDatatypes =>
