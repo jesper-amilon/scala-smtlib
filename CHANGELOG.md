@@ -1,19 +1,40 @@
 Changelog
 =========
 
+Unreleased
+----------
 
-Current
--------
+> Nothing yet
 
+v0.2.4
+------
+*Released 20 June 2019*
+
+* Cross-compile to 2.13
+* Update sbt to 1.2.8
+* Fix a few bugs affecting CVC4
+
+v0.2.3
+------
+*Released 18 December 2017*
+
+* Fix BitVectorConstant extraction
+* Make sure positions are always set
+* New architecture for tree transformers
+* Automatic Git-based versioning scheme
+
+v0.2.1
+---------------------------
+*Released 28 December 2016*
+
+* Cross-compile to 2.12
+* Deployment to Maven Sonatype
+* Finished TIP parser
 * TIP extensions
 * Tree Transformers API
-* Cross compilation and deployment to Maven Sonatype
-* Add standard theory of floating points
-* DSL wrapper
-* Bug fixes
-  * Remove erroneous symbol characters
-  * Positions always maintained
-
+* Made Interpreter interface a bit easier to use
+* Hexadecimal parsing from any int type
+* Remove erroneous symbol characters
 
 v0.2
 -----------------------
