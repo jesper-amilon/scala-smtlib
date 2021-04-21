@@ -8,7 +8,9 @@ javaOptions in IntegrationTest ++= Seq("-Xss128M")
 
 fork in IntegrationTest := true
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.1.0-RC3" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
+
 
 logBuffered in IntegrationTest := false
 
