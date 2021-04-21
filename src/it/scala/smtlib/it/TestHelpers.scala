@@ -3,7 +3,7 @@ package it
 
 import scala.sys.process._
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import java.io.File
 import java.io.FileReader

@@ -8,7 +8,9 @@ javaOptions in IntegrationTest ++= Seq("-Xss128M")
 
 fork in IntegrationTest := true
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % "test,it"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
+
 
 logBuffered in IntegrationTest := false
 
@@ -17,19 +19,13 @@ parallelExecution in Test := true
 lazy val commonSettings = Seq(
   organization := "com.regblanc",
   name := "scala-smtlib",
-  scalaVersion := "2.12.8",
-  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0")
-)
-
-lazy val publishSettings = Seq(
-  bintrayOrganization := Some("epfl-lara"),
-  bintrayRepository := "maven",
+  scalaVersion := "2.12.13",
+  crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8", "2.12.13", "2.13.0", "2.13.5")
 )
 
 lazy val root = (project in file(".")).
   configs(IntegrationTest).
   settings(commonSettings: _*).
-  settings(publishSettings: _*).
   settings(Defaults.itSettings: _*)
 
 publishMavenStyle := true

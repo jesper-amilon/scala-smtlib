@@ -8,12 +8,12 @@ import parser.Parser
 
 import common._
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.language.implicitConversions
 import scala.annotation.tailrec
 
-class PrinterTests extends FunSuite {
+class PrinterTests extends AnyFunSuite {
 
   /*
    * TODO: test the requirement from the standard:

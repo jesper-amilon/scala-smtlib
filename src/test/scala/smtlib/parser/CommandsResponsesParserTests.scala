@@ -7,11 +7,11 @@ import trees.Commands._
 import trees.CommandsResponses._
 import trees.Terms._
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.language.implicitConversions
 
-class CommandsResponsesParserTests extends FunSuite {
+class CommandsResponsesParserTests extends AnyFunSuite {
 
   private implicit def strToSym(str: String): SSymbol = SSymbol(str)
   private implicit def strToId(str: String): Identifier = Identifier(SSymbol(str))
@@ -343,7 +343,7 @@ class CommandsResponsesParserTests extends FunSuite {
   /*
    * TODO: the standard requires at least one value, currently we return empty list
    */
-  ignore("get-value response must contains at least one valuation pair") {
+  ignore("get-value response must contain at least one valuation pair") {
     intercept[UnexpectedTokenException] {
       Parser.fromString("()").parseGetValueResponse
     }
