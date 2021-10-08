@@ -44,19 +44,18 @@ trait TestHelpers {
   def getCVC4Interpreter: Interpreter = CVC4Interpreter.buildDefault
 
   def isZ3Available: Boolean = try {
-    val output: String = "z3 -help".!! 
+    val _: String = "z3 -help".!!
     true
   } catch {
-    case (_: Exception) => false
+    case _: Exception => false
   }
   
   def isCVC4Available: Boolean = try {
-    val output: String = "cvc4".!!
+    // Make sure to pass a dummy option to cvc4, otherwise it starts in interactive mode (and does not exit)
+    val _: String = "cvc4 --version".!!
     true
   } catch {
-    case (e: Exception) => {
-      false
-    }
+    case _: Exception => false
   }
 
   def executeZ3(file: File)(f: (String) => Unit): Unit = {

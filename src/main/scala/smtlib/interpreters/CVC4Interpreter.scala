@@ -1,16 +1,22 @@
 package smtlib
 package interpreters
 
-import trees.Terms._
+import smtlib.lexer.Lexer
+import smtlib.parser.Parser
+import smtlib.printer.{Printer, RecursivePrinter}
 import trees.Commands._
-import trees.CommandsResponses._
 
-class CVC4Interpreter(executable: String, args: Array[String], tailPrinter: Boolean = false)
-  extends ProcessInterpreter(executable, args, tailPrinter) {
+import java.io.BufferedReader
+
+class CVC4Interpreter(executable: String,
+                      args: Array[String],
+                      printer: Printer = RecursivePrinter,
+                      parserCtor: BufferedReader => Parser = out => new Parser(new Lexer(out)))
+  extends ProcessInterpreter(executable, args, printer, parserCtor) {
 
   printer.printCommand(SetOption(PrintSuccess(true)), in)
   in.write("\n")
-  in.flush
+  in.flush()
   parser.parseGenResponse
 
 }

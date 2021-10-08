@@ -10,17 +10,20 @@ import printer._
 
 import java.io._
 
-abstract class ProcessInterpreter(protected val process: Process, tailPrinter: Boolean) extends Interpreter {
+abstract class ProcessInterpreter private(override val printer: Printer,
+                                          override val parser: Parser,
+                                          protected val process: Process,
+                                          protected val in: BufferedWriter,
+                                          protected val out: BufferedReader) extends Interpreter {
 
-  def this(executable: String, args: Array[String], tailPrinter: Boolean = false) = {
-    this(java.lang.Runtime.getRuntime.exec((executable :: args.toList).mkString(" ")), tailPrinter)
-  }
+  private def this(printer: Printer, otherArgs: (Parser, Process, BufferedWriter, BufferedReader)) =
+    this(printer, otherArgs._1, otherArgs._2, otherArgs._3, otherArgs._4)
 
-  lazy val in = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
-  lazy val out = new BufferedReader(new InputStreamReader(process.getInputStream))
-
-  lazy val parser: Parser = new Parser(new Lexer(out))
-  lazy val printer: Printer = if (tailPrinter) TailPrinter else RecursivePrinter
+  def this(executable: String,
+           args: Array[String],
+           printer: Printer = RecursivePrinter,
+           parserCtor: BufferedReader => Parser = out => new Parser(new Lexer(out))) =
+    this(printer, ProcessInterpreter.ctorHelper(executable, args, parserCtor))
 
   def parseResponseOf(cmd: SExpr): SExpr = cmd match {
     case CheckSat() => parser.parseCheckSatResponse
@@ -98,17 +101,16 @@ abstract class ProcessInterpreter(protected val process: Process, tailPrinter: B
   override def interrupt(): Unit = synchronized {
     kill()
   }
+}
 
-  /*
-   * Manos, greatest hack:
-   * Process.destroyForcibly is only available on java8,
-   * Using the implicit conversion, if compiled with java7
-   * we will fallback to Process.destroy. If compiled on java8,
-   * it will ignore the implicit conversion as the method exists,
-   * and call the native Process.destroyForcibly.
-   */
-  private implicit class Java8Process(process: Process) {
-    def destroyForcibly() = process.destroy
+object ProcessInterpreter {
+  private def ctorHelper(executable: String,
+                         args: Array[String],
+                         parserCtor: BufferedReader => Parser): (Parser, Process, BufferedWriter, BufferedReader) = {
+    val process = java.lang.Runtime.getRuntime.exec((executable :: args.toList).mkString(" "))
+    val in = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
+    val out = new BufferedReader(new InputStreamReader(process.getInputStream))
+    val parser = parserCtor(out)
+    (parser, process, in, out)
   }
-
 }
