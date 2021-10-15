@@ -402,7 +402,7 @@ class CommandsParserTests extends AnyFunSuite with TimeLimits {
 
     {
       val declareSort = parseUniqueCmd("(declare-sort A 3)")
-    assert(parseUniqueCmd("(declare-sort A 3)") === DeclareSort("A", 3))
+      assert(parseUniqueCmd("(declare-sort A 3)") === DeclareSort("A", 3))
       val DeclareSort(a, n) = declareSort
       assert(declareSort.getPos === Position(1,1))
       assert(a.getPos === Position(1,15))
