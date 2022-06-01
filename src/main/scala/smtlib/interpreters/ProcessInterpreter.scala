@@ -14,10 +14,11 @@ abstract class ProcessInterpreter private(override val printer: Printer,
                                           override val parser: Parser,
                                           protected val process: Process,
                                           protected val in: BufferedWriter,
-                                          protected val out: BufferedReader) extends Interpreter {
+                                          protected val out: BufferedReader,
+                                          protected val err: BufferedReader) extends Interpreter {
 
-  private def this(printer: Printer, otherArgs: (Parser, Process, BufferedWriter, BufferedReader)) =
-    this(printer, otherArgs._1, otherArgs._2, otherArgs._3, otherArgs._4)
+  private def this(printer: Printer, otherArgs: (Parser, Process, BufferedWriter, BufferedReader, BufferedReader)) =
+    this(printer, otherArgs._1, otherArgs._2, otherArgs._3, otherArgs._4, otherArgs._5)
 
   def this(executable: String,
            args: Array[String],
@@ -41,7 +42,7 @@ abstract class ProcessInterpreter private(override val printer: Printer,
 
     case (_: Command) => parser.parseGenResponse
 
-    //in the case the input was not a known command, we assume nothing and 
+    //in the case the input was not a known command, we assume nothing and
     //parse an arbitrary s-expr
     case _ => parser.parseSExpr
   }
@@ -51,17 +52,30 @@ abstract class ProcessInterpreter private(override val printer: Printer,
    * should not invoke eval from different threads.
    */
   override def eval(cmd: SExpr): SExpr = {
+    def flushErr: String = {
+      val sb = new StringBuilder
+      while (err.ready()) {
+        sb ++= err.readLine()
+        if (err.ready()) sb += '\n'
+      }
+      sb.toString()
+    }
+
     try {
       printer.printSExpr(cmd, in)
       in.write("\n")
-      in.flush
+      in.flush()
 
-      parseResponseOf(cmd)
-    } catch {
-      case (ex: Exception) => {
-        if(cmd == CheckSat()) CheckSatStatus(UnknownStatus)
-        else Error("Solver encountered exception: " + ex)
+      val res = parseResponseOf(cmd)
+      if (err.ready()) {
+        Error("Solver encountered some error: " + flushErr)
+      } else {
+        res
       }
+    } catch {
+      case ex: Exception =>
+        if (cmd == CheckSat()) CheckSatStatus(UnknownStatus)
+        else Error("Solver encountered exception: " + ex)
     }
   }
 
@@ -106,11 +120,12 @@ abstract class ProcessInterpreter private(override val printer: Printer,
 object ProcessInterpreter {
   private def ctorHelper(executable: String,
                          args: Array[String],
-                         parserCtor: BufferedReader => Parser): (Parser, Process, BufferedWriter, BufferedReader) = {
+                         parserCtor: BufferedReader => Parser): (Parser, Process, BufferedWriter, BufferedReader, BufferedReader) = {
     val process = java.lang.Runtime.getRuntime.exec((executable :: args.toList).mkString(" "))
     val in = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
     val out = new BufferedReader(new InputStreamReader(process.getInputStream))
+    val err = new BufferedReader(new InputStreamReader(process.getErrorStream))
     val parser = parserCtor(out)
-    (parser, process, in, out)
+    (parser, process, in, out, err)
   }
 }
