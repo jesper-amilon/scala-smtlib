@@ -6,7 +6,6 @@ import smtlib.trees.Commands._
 import smtlib.trees.CommandsResponses._
 import smtlib.trees.Terms._
 
-
 /** Checks that formula build with theories module are correctly handled by solvers */
 class TheoriesBuilderTests extends AnyFunSuite with TestHelpers {
 
@@ -56,6 +55,15 @@ class TheoriesBuilderTests extends AnyFunSuite with TestHelpers {
       }
     } else {
       ignore(cvc5Test) {}
+    }
+
+    val bitwuzlaTest = prefix + ": with Bitwuzla"
+    if (isBitwuzlaAvailable && testIsBitwuzlaCompatible(cmds, formula)) {
+      test(bitwuzlaTest) {
+        runAndCheck(getBitwuzlaInterpreter)
+      }
+    } else {
+      ignore(bitwuzlaTest) {}
     }
   }
 
@@ -221,8 +229,8 @@ class TheoriesBuilderTests extends AnyFunSuite with TestHelpers {
     val f18 = Equals(Add(BitVectorConstant(1, 32), BitVectorConstant(2, 32), BitVectorConstant(3, 32), BitVectorConstant(4, 32)), BitVectorConstant(10, 32))
     mkTest(f18, SatStatus, uniqueName())
 
-    val f20 = Equals(Mul(BitVectorConstant(1, 32), BitVectorConstant(2, 32), BitVectorConstant(3, 32), BitVectorConstant(4, 32)), BitVectorConstant(24, 32))
-    mkTest(f20, SatStatus, uniqueName())
+    val f19 = Equals(Mul(BitVectorConstant(1, 32), BitVectorConstant(2, 32), BitVectorConstant(3, 32), BitVectorConstant(4, 32)), BitVectorConstant(24, 32))
+    mkTest(f19, SatStatus, uniqueName())
   }
 
   {
