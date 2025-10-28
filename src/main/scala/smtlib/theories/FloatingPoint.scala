@@ -25,11 +25,11 @@ object FloatingPoint {
     }
   }
 
-  export Reals.RealSort
-
+  // export Reals.RealSort
+  val RealSort = Reals.RealSort
   // Bit vector sorts, indexed by vector size
-  export FixedSizeBitVectors.BitVectorSort
-
+  // export FixedSizeBitVectors.BitVectorSort
+  val BitVectorSort = FixedSizeBitVectors.BitVectorSort
   /** Floating point sort, indexed by the length of the exponent and significand
     * components of the number.
     */
@@ -68,10 +68,10 @@ object FloatingPoint {
       case Sort(
             Identifier(
               SSymbol("FloatingPoint"),
-              Seq(SNumeral(5), SNumeral(11))
+              Seq(SNumeral(e), SNumeral(s))
             ),
             Seq()
-          ) =>
+          ) if e == 5 && s == 11 =>
         true
       case Sort(Identifier(SSymbol("Float16"), Seq()), Seq()) => true
       case _                                                  => false
@@ -86,14 +86,14 @@ object FloatingPoint {
       case Sort(
             Identifier(
               SSymbol("FloatingPoint"),
-              Seq(SNumeral(8), SNumeral(24))
+              Seq(SNumeral(e), SNumeral(s))
             ),
             Seq()
-          ) =>
+          ) if e == 8 && s == 24 =>
         true
       case Sort(Identifier(SSymbol("Float32"), Seq()), Seq()) => true
       case _                                                  => false
-    }
+    } 
   }
 
   object Float64 {
@@ -104,10 +104,10 @@ object FloatingPoint {
       case Sort(
             Identifier(
               SSymbol("FloatingPoint"),
-              Seq(SNumeral(11), SNumeral(53))
+              Seq(SNumeral(e), SNumeral(s))
             ),
             Seq()
-          ) =>
+          ) if e == 11 && s == 53 =>
         true
       case Sort(Identifier(SSymbol("Float64"), Seq()), Seq()) => true
       case _                                                  => false
@@ -122,10 +122,10 @@ object FloatingPoint {
       case Sort(
             Identifier(
               SSymbol("FloatingPoint"),
-              Seq(SNumeral(15), SNumeral(113))
+              Seq(SNumeral(e), SNumeral(s))
             ),
             Seq()
-          ) =>
+          ) if e == 15 && s == 113 =>
         true
       case Sort(Identifier(SSymbol("Float128"), Seq()), Seq()) => true
       case _                                                   => false
@@ -228,7 +228,9 @@ object FloatingPoint {
   // --------------------
 
   // Bitvector literals
-  export FixedSizeBitVectors.BitVectorLit
+  // export FixedSizeBitVectors.BitVectorLit
+  val BitVectorLit = FixedSizeBitVectors.BitVectorLit
+
 
   /** FP literals as bit string triples, with the leading bit for the
     * significand not represented (hidden bit)

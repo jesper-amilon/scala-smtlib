@@ -164,7 +164,7 @@ trait ParserCommon {
       case Tokens.StringLitKind => parseString
       case Tokens.SymbolLitKind => parseSymbol
       case Tokens.OParen => parseSList
-      case _ => expected(peekToken, attributeValuesTokenKinds*)
+      case _ => expected(peekToken, attributeValuesTokenKinds:_*)
     }
   }
   def tryParseAttributeValue: Option[AttributeValue] = {

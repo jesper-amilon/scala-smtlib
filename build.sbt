@@ -18,7 +18,7 @@ Test / parallelExecution := true
 lazy val commonSettings = Seq(
   organization := "com.regblanc",
   name := "scala-smtlib",
-  scalaVersion := "3.7.0",
+  scalaVersion := "2.13.16",
 )
 
 lazy val root = (project in file(".")).

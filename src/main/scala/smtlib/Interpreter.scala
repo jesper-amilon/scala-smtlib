@@ -40,18 +40,18 @@ object Interpreter {
   import java.io.BufferedReader
   import java.io.File
 
-  def execute(script: Script)(using interpreter: Interpreter): Unit = {
+  def execute(script: Script)(implicit interpreter: Interpreter): Unit = {
     for(cmd <- script.commands)
       interpreter.eval(cmd)
   }
 
-  def execute(scriptReader: Reader)(using Interpreter): Unit =
+  def execute(scriptReader: Reader)(implicit Interpreter: Interpreter): Unit =
     execute(new Parser(new lexer.Lexer(scriptReader)))
 
-  def execute(file: File)(using Interpreter): Unit =
+  def execute(file: File)(implicit Interpreter: Interpreter): Unit =
     execute(new Parser(new lexer.Lexer(new BufferedReader(new FileReader(file)))))
 
-  private def execute(parser: Parser)(using interpreter: Interpreter): Unit = {
+  private def execute(parser: Parser)(implicit interpreter: Interpreter): Unit = {
     // do-while, Scala 3 style
     // See https://docs.scala-lang.org/scala3/reference/dropped-features/do-while.html
     while ({
